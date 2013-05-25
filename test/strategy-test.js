@@ -2,9 +2,9 @@ var vows = require('vows');
 var assert = require('assert');
 var events = require('events');
 var util = require('util');
-var BrowserIDStrategy = require('passport-browserid/strategy');
-var BadRequestError = require('passport-browserid/errors/badrequesterror');
-var VerificationError = require('passport-browserid/errors/verificationerror');
+var PersonaStrategy = require('passport-persona/strategy');
+var BadRequestError = require('passport-persona/errors/badrequesterror');
+var VerificationError = require('passport-persona/errors/verificationerror');
 
 
 /* MockRequest */
@@ -28,19 +28,19 @@ function MockResponse() {
 util.inherits(MockResponse, events.EventEmitter);
 
 
-vows.describe('BrowserIDStrategy').addBatch({
+vows.describe('PersonaStrategy').addBatch({
   
   'strategy': {
     topic: function() {
-      return new BrowserIDStrategy({
+      return new PersonaStrategy({
           audience: 'https://www.example.com'
         },
         function() {}
       );
     },
     
-    'should be named browserid': function (strategy) {
-      assert.equal(strategy.name, 'browserid');
+    'should be named persona': function (strategy) {
+      assert.equal(strategy.name, 'persona');
     },
   },
   
@@ -72,7 +72,7 @@ vows.describe('BrowserIDStrategy').addBatch({
         }
       }
       
-      var strategy = new BrowserIDStrategy({
+      var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
         },
@@ -139,7 +139,7 @@ vows.describe('BrowserIDStrategy').addBatch({
         }
       }
       
-      var strategy = new BrowserIDStrategy({
+      var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           passReqToCallback: true,
           transport: mockhttps
@@ -211,7 +211,7 @@ vows.describe('BrowserIDStrategy').addBatch({
         }
       }
       
-      var strategy = new BrowserIDStrategy({
+      var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
         },
@@ -273,7 +273,7 @@ vows.describe('BrowserIDStrategy').addBatch({
         }
       }
       
-      var strategy = new BrowserIDStrategy({
+      var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
         },
@@ -339,7 +339,7 @@ vows.describe('BrowserIDStrategy').addBatch({
         }
       }
       
-      var strategy = new BrowserIDStrategy({
+      var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
         },
@@ -404,7 +404,7 @@ vows.describe('BrowserIDStrategy').addBatch({
         }
       }
       
-      var strategy = new BrowserIDStrategy({
+      var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
         },
@@ -465,7 +465,7 @@ vows.describe('BrowserIDStrategy').addBatch({
         }
       }
       
-      var strategy = new BrowserIDStrategy({
+      var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
         },
@@ -529,7 +529,7 @@ vows.describe('BrowserIDStrategy').addBatch({
         }
       }
       
-      var strategy = new BrowserIDStrategy({
+      var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
         },
@@ -573,7 +573,7 @@ vows.describe('BrowserIDStrategy').addBatch({
   
   'strategy handling a request without a body': {
     topic: function() {
-      var strategy = new BrowserIDStrategy({
+      var strategy = new PersonaStrategy({
           audience: 'https://www.example.com'
         },
         function() {}
@@ -612,7 +612,7 @@ vows.describe('BrowserIDStrategy').addBatch({
   
   'strategy handling a request with a body, but no assertion': {
     topic: function() {
-      var strategy = new BrowserIDStrategy({
+      var strategy = new PersonaStrategy({
           audience: 'https://www.example.com'
         },
         function() {}
@@ -649,7 +649,7 @@ vows.describe('BrowserIDStrategy').addBatch({
   'strategy constructed without a validate callback': {
     'should throw an error': function (strategy) {
       assert.throws(function() {
-        new BrowserIDStrategy({
+        new PersonaStrategy({
           audience: 'https://www.example.com'
         });
       });

@@ -1,14 +1,14 @@
 var vows = require('vows');
 var assert = require('assert');
 var util = require('util');
-var browserid = require('passport-browserid');
+var persona = require('passport-persona');
 
 
-vows.describe('passport-browserid').addBatch({
+vows.describe('passport-persona').addBatch({
   
   'module': {
     'should report a version': function (x) {
-      assert.isString(browserid.version);
+      assert.isString(persona.version);
     },
   },
   
