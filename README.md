@@ -3,11 +3,17 @@
 [Passport](https://github.com/jaredhanson/passport) strategy for authenticating
 with [Mozilla Persona](https://login.persona.org/).
 
-This module lets you authenticate using BrowserID in your Node.js applications.
-By plugging into Passport, BrowserID authentication can be easily and
-unobtrusively integrated into any application or framework that supports
+This module lets you authenticate using Mozilla Persona in your Node.js
+applications.  By plugging into Passport, Persona authentication can be easily
+and unobtrusively integrated into any application or framework that supports
 [Connect](http://www.senchalabs.org/connect/)-style middleware, including
 [Express](http://expressjs.com/).
+
+Persona is a fallback Identity Provider for the [BrowserID](https://developer.mozilla.org/en-US/docs/Mozilla/Persona)
+protocol, a distributed login system from [Mozilla](http://www.mozilla.org/).
+This strategy verifies assertions using Mozilla's [Remote Verification API](https://developer.mozilla.org/en-US/docs/Mozilla/Persona/Remote_Verification_API).
+Applications wishing to verify assertions locally should use
+[passport-browserid](https://github.com/jaredhanson/passport-browserid).
 
 ## Install
 
@@ -17,12 +23,12 @@ unobtrusively integrated into any application or framework that supports
 
 #### Configure Strategy
 
-The BrowserID authentication strategy authenticates users using an assertion of
-email address ownership, obtained via the BrowserID JavaScript API.  The
-strategy requires a `validate` callback, which accepts an email address and calls
-`done` providing a user.
+The Persona authentication strategy authenticates users using an assertion of
+email address ownership, obtained via the [navigator.id](https://developer.mozilla.org/en-US/docs/Web/API/navigator.id)
+JavaScript API.  The strategy requires a `verify` callback, which accepts an
+email address and calls `done` providing a user.
 
-    passport.use(new BrowserIDStrategy({
+    passport.use(new PersonaStrategy({
         audience: 'http://www.example.com'
       },
       function(email, done) {
@@ -34,30 +40,22 @@ strategy requires a `validate` callback, which accepts an email address and call
 
 #### Authenticate Requests
 
-Use `passport.authenticate()`, specifying the `'browserid'` strategy, to
+Use `passport.authenticate()`, specifying the `'persona'` strategy, to
 authenticate requests.
 
 For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
     app.post('/auth/browserid', 
-      passport.authenticate('browserid', { failureRedirect: '/login' }),
+      passport.authenticate('persona', { failureRedirect: '/login' }),
       function(req, res) {
         // Successful authentication, redirect home.
         res.redirect('/');
       });
 
-## Implementation
-
-This module is implemented based on the specifications being developed by [Mozilla Identity](https://wiki.mozilla.org/Identity),
-which remain a work-in-progress and are *not* final.  Implementers are
-encouraged to track the progress of these specifications and update update their
-implementations as necessary.  Furthermore, the implications of relying on
-non-final specifications should be understood prior to deployment.
-
 ## Examples
 
-For a complete, working example, refer to the [signin example](https://github.com/jaredhanson/passport-browserid/tree/master/examples/signin).
+For a complete, working example, refer to the [signin example](https://github.com/jaredhanson/passport-persona/tree/master/examples/signin).
 
 ## Tests
 
