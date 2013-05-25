@@ -1,6 +1,6 @@
 {
   "name": "passport-persona",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Mozilla Persona authentication strategy for Passport.",
   "keywords": ["passport", "persona", "browserid", "auth", "authn", "authentication", "identity"],
   "repository": {
