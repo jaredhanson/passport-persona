@@ -1,14 +1,14 @@
 {
-  "name": "passport-browserid",
+  "name": "passport-persona",
   "version": "0.1.4",
-  "description": "BrowserID authentication strategy for Passport.",
-  "keywords": ["passport", "browserid", "auth", "authn", "authentication", "identity"],
+  "description": "Mozilla Persona authentication strategy for Passport.",
+  "keywords": ["passport", "persona", "browserid", "auth", "authn", "authentication", "identity"],
   "repository": {
     "type": "git",
-    "url": "git://github.com/jaredhanson/passport-browserid.git"
+    "url": "git://github.com/jaredhanson/passport-persona.git"
   },
   "bugs": {
-    "url": "http://github.com/jaredhanson/passport-browserid/issues"
+    "url": "http://github.com/jaredhanson/passport-persona/issues"
   },
   "author": {
     "name": "Jared Hanson",
@@ -23,7 +23,7 @@
     "type": "MIT",
     "url": "http://www.opensource.org/licenses/MIT" 
   } ],
-  "main": "./lib/passport-browserid",
+  "main": "./lib/passport-persona",
   "dependencies": {
     "pkginfo": "0.2.x",
     "passport": "~0.1.3"
