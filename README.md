@@ -1,7 +1,7 @@
-# Passport-BrowserID
+# Passport-Persona
 
 [Passport](https://github.com/jaredhanson/passport) strategy for authenticating
-with [BrowserID](https://login.persona.org/).
+with [Mozilla Persona](https://login.persona.org/).
 
 This module lets you authenticate using BrowserID in your Node.js applications.
 By plugging into Passport, BrowserID authentication can be easily and
@@ -11,7 +11,7 @@ unobtrusively integrated into any application or framework that supports
 
 ## Install
 
-    $ npm install passport-browserid
+    $ npm install passport-persona
 
 ## Usage
 
@@ -64,7 +64,7 @@ For a complete, working example, refer to the [signin example](https://github.co
     $ npm install --dev
     $ make test
 
-[![Build Status](https://secure.travis-ci.org/jaredhanson/passport-browserid.png)](http://travis-ci.org/jaredhanson/passport-browserid)
+[![Build Status](https://secure.travis-ci.org/jaredhanson/passport-persona.png)](http://travis-ci.org/jaredhanson/passport-persona)
 
 ## Credits
 
