@@ -316,6 +316,137 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  'strategy handling a request with an verification result that has an audience mismatch': {
+    topic: function() {
+      var mockhttps = {
+        request : function(options, callback) {
+          var req = new MockRequest();
+          var res = new MockResponse();
+          
+          req.on('end', function(data, encoding) {
+            res.emit('data', JSON.stringify({
+              status: 'okay',
+              email: 'johndoe@example.net',
+              audience: 'https://www.foo.com:80',
+              expires: 1322080163206,
+              issuer: 'login.persona.org' })
+            );
+            res.emit('end');
+          })
+          
+          callback(res);
+          return req;
+        }
+      }
+      
+      var strategy = new PersonaStrategy({
+          audience: 'https://www.example.com:80',
+          transport: mockhttps
+        },
+        function(email, done) {
+          done(null, { email: email });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        req.body = {};
+        req.body['assertion'] = 'secret-assertion-data';
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function(err) {
+          self.callback(null, err);
+        }
+        
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not call succes' : function(err, req) {
+        assert.isNull(err);
+      },
+      'should error authentication' : function(err, e) {
+        assert.instanceOf(e, Error);
+        assert.equal(e.message, 'audience mismatch in verification result');
+      },
+    },
+  },
+  
+  'strategy handling a request with an verification result that has an ignored audience mismatch': {
+    topic: function() {
+      var mockhttps = {
+        request : function(options, callback) {
+          var req = new MockRequest();
+          var res = new MockResponse();
+          
+          req.on('end', function(data, encoding) {
+            res.emit('data', JSON.stringify({
+              status: 'okay',
+              email: 'johndoe@example.net',
+              audience: 'https://www.foo.com:80',
+              expires: 1322080163206,
+              issuer: 'login.persona.org' })
+            );
+            res.emit('end');
+          })
+          
+          callback(res);
+          return req;
+        }
+      }
+      
+      var strategy = new PersonaStrategy({
+          audience: 'https://www.example.com:80',
+          checkAudience: false,
+          transport: mockhttps
+        },
+        function(email, done) {
+          done(null, { email: email });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        req.body = {};
+        req.body['assertion'] = 'secret-assertion-data';
+        strategy.success = function(user) {
+          req.user = user;
+          self.callback(null, req);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function(err) {
+          self.callback(new Error('should not be called'));
+        }
+        
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not call error or fail' : function(err, req) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, req) {
+        assert.equal(req.user.email, 'johndoe@example.net');
+      },
+    },
+  },
+  
   'strategy handling a request in which verify returns unexpected content': {
     topic: function() {
       var mockhttps = {
