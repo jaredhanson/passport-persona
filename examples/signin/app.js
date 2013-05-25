@@ -1,7 +1,7 @@
 var express = require('express')
   , passport = require('passport')
   , util = require('util')
-  , BrowserIDStrategy = require('passport-persona').Strategy;
+  , PersonaStrategy = require('passport-persona').Strategy;
 
 
 // Passport session setup.
@@ -20,11 +20,11 @@ passport.deserializeUser(function(email, done) {
 });
 
 
-// Use the BrowserIDStrategy within Passport.
-//   Strategies in passport require a `validate` function, which accept
+// Use the PersonaStrategy within Passport.
+//   Strategies in passport require a `verify` function, which accept
 //   credentials (in this case, a BrowserID verified email address), and invoke
 //   a callback with a user object.
-passport.use(new BrowserIDStrategy({
+passport.use(new PersonaStrategy({
     audience: 'http://127.0.0.1:3000'
   },
   function(email, done) {
@@ -80,7 +80,7 @@ app.get('/login', function(req, res){
 //   request.  BrowserID authentication will verify the assertion obtained from
 //   the browser via the JavaScript API.
 app.post('/auth/browserid', 
-  passport.authenticate('browserid', { failureRedirect: '/login' }),
+  passport.authenticate('persona', { failureRedirect: '/login' }),
   function(req, res) {
     res.redirect('/');
   });
