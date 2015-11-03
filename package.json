@@ -1,6 +1,6 @@
 {
   "name": "passport-persona",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Mozilla Persona authentication strategy for Passport.",
   "keywords": ["passport", "persona", "browserid", "auth", "authn", "authentication", "identity"],
   "repository": {
@@ -26,10 +26,10 @@
   "main": "./lib/passport-persona",
   "dependencies": {
     "pkginfo": "0.2.x",
-    "passport": "~0.1.3"
+    "passport-strategy": "^1.0.0"
   },
   "devDependencies": {
-    "vows": "0.6.x"
+    "vows": "^0.8.1"
   },
   "scripts": {
     "test": "NODE_PATH=lib node_modules/.bin/vows test/*-test.js"
