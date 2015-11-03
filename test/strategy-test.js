@@ -29,7 +29,7 @@ util.inherits(MockResponse, events.EventEmitter);
 
 
 vows.describe('PersonaStrategy').addBatch({
-  
+
   'strategy': {
     topic: function() {
       return new PersonaStrategy({
@@ -38,19 +38,19 @@ vows.describe('PersonaStrategy').addBatch({
         function() {}
       );
     },
-    
+
     'should be named persona': function (strategy) {
       assert.equal(strategy.name, 'persona');
     },
   },
-  
+
   'strategy handling a request with an assertion that is verified': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             if (options.method === 'POST'
                 && options.headers['Content-Type'] === 'application/x-www-form-urlencoded'
@@ -66,12 +66,12 @@ vows.describe('PersonaStrategy').addBatch({
               res.emit('end');
             }
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
@@ -82,7 +82,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -96,12 +96,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.fail = function() {
           self.callback(new Error('should not be called'));
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call fail' : function(err, req) {
         assert.isNull(err);
       },
@@ -110,14 +110,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request with an assertion that is verified with issuer': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             if (options.method === 'POST'
                 && options.headers['Content-Type'] === 'application/x-www-form-urlencoded'
@@ -133,12 +133,12 @@ vows.describe('PersonaStrategy').addBatch({
               res.emit('end');
             }
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
@@ -149,7 +149,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -163,12 +163,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.fail = function() {
           self.callback(new Error('should not be called'));
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call fail' : function(err, req) {
         assert.isNull(err);
       },
@@ -178,14 +178,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request with an assertion that is verified using req argument to callback': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             if (options.method === 'POST'
                 && options.headers['Content-Type'] === 'application/x-www-form-urlencoded'
@@ -201,12 +201,12 @@ vows.describe('PersonaStrategy').addBatch({
               res.emit('end');
             }
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           passReqToCallback: true,
@@ -218,7 +218,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -233,12 +233,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.fail = function() {
           self.callback(new Error('should not be called'));
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call fail' : function(err, req) {
         assert.isNull(err);
       },
@@ -250,14 +250,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request with an assertion that is verified with issuer using req argument to callback': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             if (options.method === 'POST'
                 && options.headers['Content-Type'] === 'application/x-www-form-urlencoded'
@@ -273,12 +273,12 @@ vows.describe('PersonaStrategy').addBatch({
               res.emit('end');
             }
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           passReqToCallback: true,
@@ -290,7 +290,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -305,12 +305,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.fail = function() {
           self.callback(new Error('should not be called'));
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call fail' : function(err, req) {
         assert.isNull(err);
       },
@@ -323,14 +323,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request with an assertion that is verified with info': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             if (options.method === 'POST'
                 && options.headers['Content-Type'] === 'application/x-www-form-urlencoded'
@@ -346,12 +346,12 @@ vows.describe('PersonaStrategy').addBatch({
               res.emit('end');
             }
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
@@ -362,7 +362,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -376,12 +376,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.fail = function() {
           self.callback(new Error('should not be called'));
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call fail' : function(err, req) {
         assert.isNull(err);
       },
@@ -393,14 +393,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request with an assertion that is not verified': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             res.emit('data', JSON.stringify({
               status: 'failure',
@@ -408,12 +408,12 @@ vows.describe('PersonaStrategy').addBatch({
             );
             res.emit('end');
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
@@ -424,7 +424,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -440,12 +440,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.error = function(err) {
           self.callback(null, err);
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call succes' : function(err, req) {
         assert.isNull(err);
       },
@@ -456,14 +456,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request with an verification result that has an audience mismatch': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             res.emit('data', JSON.stringify({
               status: 'okay',
@@ -474,12 +474,12 @@ vows.describe('PersonaStrategy').addBatch({
             );
             res.emit('end');
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com:80',
           transport: mockhttps
@@ -490,13 +490,14 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
         var req = {};
         req.body = {};
         req.body['assertion'] = 'secret-assertion-data';
+		req.headers = {host: 'https://www.foo.com:80'};
         strategy.success = function(user) {
           self.callback(new Error('should not be called'));
         }
@@ -506,12 +507,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.error = function(err) {
           self.callback(null, err);
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call succes' : function(err, req) {
         assert.isNull(err);
       },
@@ -521,14 +522,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request with an verification result that has an ignored audience mismatch': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             res.emit('data', JSON.stringify({
               status: 'okay',
@@ -539,12 +540,12 @@ vows.describe('PersonaStrategy').addBatch({
             );
             res.emit('end');
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com:80',
           checkAudience: false,
@@ -556,13 +557,14 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
         var req = {};
         req.body = {};
         req.body['assertion'] = 'secret-assertion-data';
+		req.headers = {host: 'https://www.foo.com:80'};
         strategy.success = function(user) {
           req.user = user;
           self.callback(null, req);
@@ -573,12 +575,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.error = function(err) {
           self.callback(new Error('should not be called'));
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call error or fail' : function(err, req) {
         assert.isNull(err);
       },
@@ -587,14 +589,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request in which verify returns unexpected content': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             res.emit('data', '<html>\
 <head><title>411 Length Required</title></head> \
@@ -605,12 +607,12 @@ vows.describe('PersonaStrategy').addBatch({
 </html>');
             res.emit('end');
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
@@ -621,7 +623,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -637,12 +639,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.error = function(err) {
           self.callback(null, err);
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call success or fail' : function(err, req) {
         assert.isNull(err);
       },
@@ -652,14 +654,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request that is not validated': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             res.emit('data', JSON.stringify({
               status: 'okay',
@@ -670,12 +672,12 @@ vows.describe('PersonaStrategy').addBatch({
             );
             res.emit('end');
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
@@ -686,7 +688,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -699,12 +701,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.fail = function() {
           self.callback(null);
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call success' : function(err, req) {
         assert.isNull(err);
       },
@@ -713,14 +715,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request that is not validated with info': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             res.emit('data', JSON.stringify({
               status: 'okay',
@@ -731,12 +733,12 @@ vows.describe('PersonaStrategy').addBatch({
             );
             res.emit('end');
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
@@ -747,7 +749,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -760,12 +762,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.fail = function(info) {
           self.callback(null, info);
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call success' : function(err, req) {
         assert.isNull(err);
       },
@@ -777,14 +779,14 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request that encounters an error during validation': {
     topic: function() {
       var mockhttps = {
         request : function(options, callback) {
           var req = new MockRequest();
           var res = new MockResponse();
-          
+
           req.on('end', function(data, encoding) {
             res.emit('data', JSON.stringify({
               status: 'okay',
@@ -795,12 +797,12 @@ vows.describe('PersonaStrategy').addBatch({
             );
             res.emit('end');
           })
-          
+
           callback(res);
           return req;
         }
       }
-      
+
       var strategy = new PersonaStrategy({
           audience: 'https://www.example.com',
           transport: mockhttps
@@ -811,7 +813,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -827,12 +829,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.error = function(err) {
           self.callback(null, err);
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call success or fail' : function(err, req) {
         assert.isNull(err);
       },
@@ -842,7 +844,7 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request without a body': {
     topic: function() {
       var strategy = new PersonaStrategy({
@@ -852,7 +854,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -863,12 +865,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.fail = function(info) {
           self.callback(null, info);
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call success' : function(err, req) {
         assert.isNull(err);
       },
@@ -881,7 +883,7 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy handling a request with a body, but no assertion': {
     topic: function() {
       var strategy = new PersonaStrategy({
@@ -891,7 +893,7 @@ vows.describe('PersonaStrategy').addBatch({
       );
       return strategy;
     },
-    
+
     'after augmenting with actions': {
       topic: function(strategy) {
         var self = this;
@@ -903,12 +905,12 @@ vows.describe('PersonaStrategy').addBatch({
         strategy.fail = function() {
           self.callback(null);
         }
-        
+
         process.nextTick(function () {
           strategy.authenticate(req);
         });
       },
-      
+
       'should not call success' : function(err, req) {
         assert.isNull(err);
       },
@@ -917,7 +919,7 @@ vows.describe('PersonaStrategy').addBatch({
       },
     },
   },
-  
+
   'strategy constructed without a validate callback': {
     'should throw an error': function (strategy) {
       assert.throws(function() {
@@ -927,5 +929,5 @@ vows.describe('PersonaStrategy').addBatch({
       });
     },
   },
-  
+
 }).export(module);
