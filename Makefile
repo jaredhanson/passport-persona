@@ -1,8 +1,11 @@
+WITH_VOWS = 1
+
 include node_modules/make-node/main.mk
 
 
 SOURCES = lib/*.js lib/**/*.js
-TESTS = test/*.test.js test/**/*.test.js
+#TESTS = test/*.test.js test/**/*.test.js
+TESTS = test/*-test.js
 
 LCOVFILE = ./reports/coverage/lcov.info
 
