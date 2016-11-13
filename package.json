@@ -2,14 +2,15 @@
   "name": "passport-persona",
   "version": "0.1.7",
   "description": "Mozilla Persona authentication strategy for Passport.",
-  "keywords": ["passport", "persona", "browserid", "auth", "authn", "authentication", "identity"],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/jaredhanson/passport-persona.git"
-  },
-  "bugs": {
-    "url": "http://github.com/jaredhanson/passport-persona/issues"
-  },
+  "keywords": [
+    "passport",
+    "persona",
+    "browserid",
+    "auth",
+    "authn",
+    "authentication",
+    "identity"
+  ],
   "author": {
     "name": "Jared Hanson",
     "email": "jaredhanson@gmail.com",
@@ -19,10 +20,19 @@
     { "name": "Jared Hanson", "email": "jaredhanson@gmail.com" },
     { "name": "Leo McArdle", "email": "leomcardle@gmail.com" }
   ],
-  "licenses": [ {
-    "type": "MIT",
-    "url": "http://www.opensource.org/licenses/MIT" 
-  } ],
+  "repository": {    "type": "git",
+    "url": "git://github.com/jaredhanson/passport-persona.git"
+  },
+  "bugs": {
+    "url": "http://github.com/jaredhanson/passport-persona/issues"
+  },
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
   "main": "./lib/passport-persona",
   "dependencies": {
     "pkginfo": "0.2.x",
@@ -31,8 +41,10 @@
   "devDependencies": {
     "vows": "0.8.x"
   },
+  "engines": {
+    "node": ">= 0.4.0"
+  },
   "scripts": {
     "test": "NODE_PATH=lib node_modules/.bin/vows test/*-test.js"
-  },
-  "engines": { "node": ">= 0.4.0" }
+  }
 }
