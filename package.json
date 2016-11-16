@@ -20,7 +20,8 @@
     { "name": "Jared Hanson", "email": "jaredhanson@gmail.com" },
     { "name": "Leo McArdle", "email": "leomcardle@gmail.com" }
   ],
-  "repository": {    "type": "git",
+  "repository": {
+    "type": "git",
     "url": "git://github.com/jaredhanson/passport-persona.git"
   },
   "bugs": {
@@ -35,11 +36,13 @@
   ],
   "main": "./lib",
   "dependencies": {
-    "pkginfo": "0.2.x",
-    "passport": "~0.1.3"
+    "passport-strategy": "1.x.x"
   },
   "devDependencies": {
     "make-node": "0.3.x",
+    "mocha": "2.x.x",
+    "chai": "2.x.x",
+    "chai-passport-strategy": "1.x.x",
     "vows": "0.8.x"
   },
   "engines": {
