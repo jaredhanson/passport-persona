@@ -2,9 +2,9 @@ var vows = require('vows');
 var assert = require('assert');
 var events = require('events');
 var util = require('util');
-var PersonaStrategy = require('../lib/passport-persona/strategy');
-var BadRequestError = require('../lib/passport-persona/errors/badrequesterror');
-var VerificationError = require('../lib/passport-persona/errors/verificationerror');
+var PersonaStrategy = require('../lib/strategy');
+var BadRequestError = require('../lib/errors/badrequesterror');
+var VerificationError = require('../lib/errors/verificationerror');
 
 
 /* MockRequest */

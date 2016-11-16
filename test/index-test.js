@@ -1,7 +1,7 @@
 var vows = require('vows');
 var assert = require('assert');
 var util = require('util');
-var persona = require('../lib/passport-persona');
+var persona = require('../lib');
 
 
 vows.describe('passport-persona').addBatch({
