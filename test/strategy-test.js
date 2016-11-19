@@ -663,6 +663,7 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  // oK
   'strategy handling a request that is not validated': {
     topic: function() {
       var mockhttps = {
@@ -724,6 +725,7 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  // OK
   'strategy handling a request that is not validated with info': {
     topic: function() {
       var mockhttps = {
@@ -788,6 +790,7 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  // OK
   'strategy handling a request that encounters an error during validation': {
     topic: function() {
       var mockhttps = {

@@ -385,6 +385,129 @@ describe('Strategy', function() {
     });
   }); // handling a request with an assertion that is verified by email and yeilds info
   
+  describe('handling a request that fails authentication', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({
+            status: 'okay',
+            email: 'johndoe@example.net',
+            audience: 'https://www.example.com',
+            expires: 1322080163206,
+            issuer: 'login.persona.org' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    
+    var user
+      , info;
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        transport: mockhttps
+      },
+      function(email, done) {
+        done(null, false);
+      }
+    );
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .fail(function(i) {
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          done(err);
+        })
+        .authenticate();
+    });
+    
+    it('should not yield info', function() {
+      expect(info).to.be.undefined;
+    });
+  }); // handling a request that fails authentication
+  
+  describe('handling a request that fails authentication and yeilds info', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({
+            status: 'okay',
+            email: 'johndoe@example.net',
+            audience: 'https://www.example.com',
+            expires: 1322080163206,
+            issuer: 'login.persona.org' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    
+    var user
+      , info;
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        transport: mockhttps
+      },
+      function(email, done) {
+        done(null, false, { message: 'Invite required' });
+      }
+    );
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .fail(function(i) {
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          done(err);
+        })
+        .authenticate();
+    });
+    
+    it('should yeild info', function() {
+      expect(info).to.be.an.object;
+      expect(info.message).to.equal('Invite required');
+    });
+  }); // handling a request that fails authentication and yeilds info
+  
   describe('handling a request with an assertion that fails verification', function() {
     var mockhttps = {
       request : function(options, callback) {
@@ -668,5 +791,78 @@ describe('Strategy', function() {
       expect(info).to.be.undefined;
     });
   }); // encountering an unexpected response from verify endpoint
+  
+  describe('handling a request that encounters an error while application verifies identity', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({
+            status: 'okay',
+            email: 'johndoe@example.net',
+            audience: 'https://www.example.com',
+            expires: 1322080163206,
+            issuer: 'login.persona.org' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        transport: mockhttps
+      },
+      function(email, done) {
+        done(new Error('something went wrong'));
+      }
+    );
+    
+    
+    var error
+      , user
+      , info;
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .success(function(u, i) {
+          user = u;
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          error = err;
+          done();
+        })
+        .authenticate();
+    });
+
+    it('should error', function() {
+      expect(error).to.be.an.instanceof(Error)
+      expect(error.message).to.equal('something went wrong')
+    });
+
+    it('should not yield user', function() {
+      expect(user).to.be.undefined;
+    });
+    
+    it('should not yeild info', function() {
+      expect(info).to.be.undefined;
+    });
+  }); // handling a request with an assertion that fails verification
   
 });
