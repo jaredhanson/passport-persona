@@ -2,6 +2,8 @@ var PersonaStrategy = require('../lib/strategy');
 var events = require('events');
 var util = require('util');
 var chai = require('chai');
+var BadRequestError = require('../lib/errors/badrequesterror');
+var VerificationError = require('../lib/errors/verificationerror');
 
 
 /* MockRequest */
@@ -382,5 +384,76 @@ describe('Strategy', function() {
       expect(info.message).to.equal('Welcome!');
     });
   }); // handling a request with an assertion that is verified by email and yeilds info
+  
+  describe('handling a request with an assertion that is not verified', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({
+            status: 'failure',
+            reason: 'need assertion and audience' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        transport: mockhttps
+      },
+      function(email, done) {
+        done(null, { email: email });
+      }
+    );
+    
+    
+    var error
+      , user
+      , info;
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .success(function(u, i) {
+          user = u;
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          error = err;
+          done();
+        })
+        .authenticate();
+    });
+
+    it('should error', function() {
+      expect(error).to.be.an.instanceof(Error)
+      expect(error).to.be.an.instanceof(VerificationError)
+      expect(error.message).to.equal('need assertion and audience')
+    });
+
+    it('should not yield user', function() {
+      expect(user).to.be.undefined;
+    });
+    
+    it('should not yeild info', function() {
+      expect(info).to.be.undefined;
+    });
+  }); // handling a request with an assertion that is not verified
   
 });

@@ -329,6 +329,7 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  // OK
   'strategy handling a request with an assertion that is verified with info': {
     topic: function() {
       var mockhttps = {
@@ -399,6 +400,7 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  // OK
   'strategy handling a request with an assertion that is not verified': {
     topic: function() {
       var mockhttps = {
