@@ -39,7 +39,7 @@ describe('Strategy', function() {
     });
   });
   
-  describe('handling a request with an assertion that is verified', function() {
+  describe('handling a request with an assertion that is verified by email', function() {
     var mockhttps = {
       request : function(options, callback) {
         var req = new MockRequest();
@@ -92,11 +92,195 @@ describe('Strategy', function() {
         .authenticate();
     });
 
-    it('should supply user', function() {
+    it('should yield user', function() {
       expect(user).to.be.an.object;
       expect(user.email).to.equal('johndoe@example.net');
     });
+  }); // handling a request with an assertion that is verified by email
+  
+  describe('handling a request with an assertion that is verified by email and issuer', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({
+            status: 'okay',
+            email: 'johndoe@example.net',
+            audience: 'https://www.example.com',
+            expires: 1322080163206,
+            issuer: 'login.persona.org' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
     
-  });
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        transport: mockhttps
+      },
+      function(email, issuer, done) {
+        done(null, { email: email, issuer: issuer });
+      }
+    );
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .success(function(u, i) {
+          user = u;
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          done(err);
+        })
+        .authenticate();
+    });
+
+    it('should yield user', function() {
+      expect(user).to.be.an.object;
+      expect(user.email).to.equal('johndoe@example.net');
+      expect(user.issuer).to.equal('login.persona.org');
+    });
+  }); // handling a request with an assertion that is verified by email and issuer
+  
+  describe('handling a request with an assertion that is verified by email, in passReqToCallbackMode', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({
+            status: 'okay',
+            email: 'johndoe@example.net',
+            audience: 'https://www.example.com',
+            expires: 1322080163206,
+            issuer: 'login.persona.org' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        passReqToCallback: true,
+        transport: mockhttps
+      },
+      function(req, email, done) {
+        if (req.method != 'GET') { return done(new Error('incorrect req argument')); }
+        
+        done(null, { email: email });
+      }
+    );
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .success(function(u, i) {
+          user = u;
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          done(err);
+        })
+        .authenticate();
+    });
+
+    it('should yield user', function() {
+      expect(user).to.be.an.object;
+      expect(user.email).to.equal('johndoe@example.net');
+    });
+  }); // handling a request with an assertion that is verified by email, in passReqToCallbackMode
+  
+  describe('handling a request with an assertion that is verified by email and issuer, in passReqToCallbackMode', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({
+            status: 'okay',
+            email: 'johndoe@example.net',
+            audience: 'https://www.example.com',
+            expires: 1322080163206,
+            issuer: 'login.persona.org' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        passReqToCallback: true,
+        transport: mockhttps
+      },
+      function(req, email, issuer, done) {
+        if (req.method != 'GET') { return done(new Error('incorrect req argument')); }
+        
+        done(null, { email: email, issuer: issuer });
+      }
+    );
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .success(function(u, i) {
+          user = u;
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          done(err);
+        })
+        .authenticate();
+    });
+
+    it('should yield user', function() {
+      expect(user).to.be.an.object;
+      expect(user.email).to.equal('johndoe@example.net');
+      expect(user.issuer).to.equal('login.persona.org');
+    });
+  }); // handling a request with an assertion that is verified by email, in passReqToCallbackMode
   
 });
