@@ -30,6 +30,7 @@ util.inherits(MockResponse, events.EventEmitter);
 
 vows.describe('PersonaStrategy').addBatch({
   
+  // OK
   'strategy': {
     topic: function() {
       return new PersonaStrategy({

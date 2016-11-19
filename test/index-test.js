@@ -6,6 +6,7 @@ var persona = require('../lib');
 
 vows.describe('passport-persona').addBatch({
   
+  // OK
   'module': {
     'should report a version': function (x) {
       assert.isString(persona.version);
