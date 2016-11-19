@@ -464,6 +464,7 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  // SKIPPED
   'strategy handling a request with an verification result that has an audience mismatch': {
     topic: function() {
       var mockhttps = {
@@ -529,6 +530,7 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  // SKIP
   'strategy handling a request with an verification result that has an ignored audience mismatch': {
     topic: function() {
       var mockhttps = {
@@ -595,6 +597,7 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  // OK
   'strategy handling a request in which verify returns unexpected content': {
     topic: function() {
       var mockhttps = {
