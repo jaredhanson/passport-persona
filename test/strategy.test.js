@@ -865,4 +865,65 @@ describe('Strategy', function() {
     });
   }); // handling a request with an assertion that fails verification
   
+  describe('handling a request without body', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({
+            status: 'okay',
+            email: 'johndoe@example.net',
+            audience: 'https://www.example.com',
+            expires: 1322080163206,
+            issuer: 'login.persona.org' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        transport: mockhttps
+      },
+      function(email, done) {
+        done(new Error('something went wrong'));
+      }
+    );
+    
+    
+    var info, status;
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .fail(function(i, s) {
+          info = i;
+          status = s;
+          done();
+        })
+        .req(function(req) {
+        })
+        .error(function(err) {
+          done(err);
+        })
+        .authenticate();
+    });
+
+    it('should fail with info and status', function() {
+      expect(info).to.be.an.object;
+      expect(info.message).to.equal('Missing assertion');
+      expect(status).to.equal(400);
+    });
+  }); // handling a request without body
+  
 });
