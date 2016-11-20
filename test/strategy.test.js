@@ -403,7 +403,7 @@ describe('Strategy', function() {
     });
   }); // handling a request with an assertion that is verified by email, in passReqToCallbackMode
   
-  describe('handling a request that fails authentication', function() {
+  describe('handling a request that fails identity verification', function() {
     var mockhttps = {
       request : function(options, callback) {
         var req = new MockRequest();
@@ -462,9 +462,9 @@ describe('Strategy', function() {
     it('should not yield info', function() {
       expect(info).to.be.undefined;
     });
-  }); // handling a request that fails authentication
+  }); // handling a request that fails identity verification
   
-  describe('handling a request that fails authentication and yeilds info', function() {
+  describe('handling a request that fails identity verification and yeilds info', function() {
     var mockhttps = {
       request : function(options, callback) {
         var req = new MockRequest();
@@ -524,293 +524,9 @@ describe('Strategy', function() {
       expect(info).to.be.an.object;
       expect(info.message).to.equal('Invite required');
     });
-  }); // handling a request that fails authentication and yeilds info
+  }); // handling a request that fails identity verification and yeilds info
   
-  describe('handling a request with an assertion that fails verification', function() {
-    var mockhttps = {
-      request : function(options, callback) {
-        var req = new MockRequest();
-        var res = new MockResponse();
-        
-        req.on('end', function(data, encoding) {
-          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
-          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
-          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
-          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
-          
-          res.emit('data', JSON.stringify({
-            status: 'failure',
-            reason: 'need assertion and audience' })
-          );
-          res.emit('end');
-        })
-        
-        callback(res);
-        return req;
-      }
-    }
-    
-    var strategy = new PersonaStrategy({
-        audience: 'https://www.example.com',
-        transport: mockhttps
-      },
-      function(email, done) {
-        done(null, { email: email });
-      }
-    );
-    
-    
-    var error
-      , user
-      , info;
-    
-    before(function(done) {
-      chai.passport.use(strategy)
-        .success(function(u, i) {
-          user = u;
-          info = i;
-          done();
-        })
-        .req(function(req) {
-          req.body = {};
-          req.body['assertion'] = 'secret-assertion-data';
-        })
-        .error(function(err) {
-          error = err;
-          done();
-        })
-        .authenticate();
-    });
-
-    it('should error', function() {
-      expect(error).to.be.an.instanceof(Error)
-      expect(error).to.be.an.instanceof(VerificationError)
-      expect(error.message).to.equal('need assertion and audience')
-    });
-
-    it('should not yield user', function() {
-      expect(user).to.be.undefined;
-    });
-    
-    it('should not yeild info', function() {
-      expect(info).to.be.undefined;
-    });
-  }); // handling a request with an assertion that fails verification
-  
-  describe('handling a request with an assertion that fails verification due to audience mismatch', function() {
-    var mockhttps = {
-      request : function(options, callback) {
-        var req = new MockRequest();
-        var res = new MockResponse();
-        
-        req.on('end', function(data, encoding) {
-          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
-          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
-          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
-          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
-          
-          res.emit('data', JSON.stringify({
-            status: 'failure',
-            reason: 'audience mismatch: domain mismatch' })
-          );
-          res.emit('end');
-        })
-        
-        callback(res);
-        return req;
-      }
-    }
-    
-    var strategy = new PersonaStrategy({
-        audience: 'https://www.example.com',
-        transport: mockhttps
-      },
-      function(email, done) {
-        done(null, { email: email });
-      }
-    );
-    
-    
-    var error
-      , user
-      , info;
-    
-    before(function(done) {
-      chai.passport.use(strategy)
-        .success(function(u, i) {
-          user = u;
-          info = i;
-          done();
-        })
-        .req(function(req) {
-          req.body = {};
-          req.body['assertion'] = 'secret-assertion-data';
-        })
-        .error(function(err) {
-          error = err;
-          done();
-        })
-        .authenticate();
-    });
-
-    it('should error', function() {
-      expect(error).to.be.an.instanceof(Error)
-      expect(error).to.be.an.instanceof(VerificationError)
-      expect(error.message).to.equal('audience mismatch: domain mismatch')
-    });
-
-    it('should not yield user', function() {
-      expect(user).to.be.undefined;
-    });
-    
-    it('should not yeild info', function() {
-      expect(info).to.be.undefined;
-    });
-  }); // handling a request with an assertion that fails verification due to audience mismatch
-  
-  describe('handling a request with an assertion that fails verification due to expired assertion', function() {
-    var mockhttps = {
-      request : function(options, callback) {
-        var req = new MockRequest();
-        var res = new MockResponse();
-        
-        req.on('end', function(data, encoding) {
-          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
-          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
-          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
-          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
-          
-          res.emit('data', JSON.stringify({ status: 'failure', reason: 'assertion has expired' })
-          );
-          res.emit('end');
-        })
-        
-        callback(res);
-        return req;
-      }
-    }
-    
-    var strategy = new PersonaStrategy({
-        audience: 'https://www.example.com',
-        transport: mockhttps
-      },
-      function(email, done) {
-        done(null, { email: email });
-      }
-    );
-    
-    
-    var error
-      , user
-      , info;
-    
-    before(function(done) {
-      chai.passport.use(strategy)
-        .success(function(u, i) {
-          user = u;
-          info = i;
-          done();
-        })
-        .req(function(req) {
-          req.body = {};
-          req.body['assertion'] = 'secret-assertion-data';
-        })
-        .error(function(err) {
-          error = err;
-          done();
-        })
-        .authenticate();
-    });
-
-    it('should error', function() {
-      expect(error).to.be.an.instanceof(Error)
-      expect(error).to.be.an.instanceof(VerificationError)
-      expect(error.message).to.equal('assertion has expired')
-    });
-
-    it('should not yield user', function() {
-      expect(user).to.be.undefined;
-    });
-    
-    it('should not yeild info', function() {
-      expect(info).to.be.undefined;
-    });
-  }); // handling a request with an assertion that fails verification due to expired assertion
-  
-  describe('encountering an unexpected response from verify endpoint', function() {
-    var mockhttps = {
-      request : function(options, callback) {
-        var req = new MockRequest();
-        var res = new MockResponse();
-        
-        req.on('end', function(data, encoding) {
-          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
-          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
-          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
-          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
-          
-          res.emit('data', '<html>\
-<head><title>411 Length Required</title></head> \
-<body bgcolor="white"> \
-<center><h1>411 Length Required</h1></center> \
-<hr><center>nginx/0.7.65</center> \
-</body> \
-</html>');
-          res.emit('end');
-        })
-        
-        callback(res);
-        return req;
-      }
-    }
-    
-    var strategy = new PersonaStrategy({
-        audience: 'https://www.example.com',
-        transport: mockhttps
-      },
-      function(email, done) {
-        done(null, { email: email });
-      }
-    );
-    
-    
-    var error
-      , user
-      , info;
-    
-    before(function(done) {
-      chai.passport.use(strategy)
-        .success(function(u, i) {
-          user = u;
-          info = i;
-          done();
-        })
-        .req(function(req) {
-          req.body = {};
-          req.body['assertion'] = 'secret-assertion-data';
-        })
-        .error(function(err) {
-          error = err;
-          done();
-        })
-        .authenticate();
-    });
-
-    it('should error', function() {
-      expect(error).to.be.an.instanceof(Error)
-      expect(error.message).to.equal('Failed to parse verification response')
-    });
-
-    it('should not yield user', function() {
-      expect(user).to.be.undefined;
-    });
-    
-    it('should not yeild info', function() {
-      expect(info).to.be.undefined;
-    });
-  }); // encountering an unexpected response from verify endpoint
-  
-  describe('handling a request that encounters an error while application verifies identity', function() {
+  describe('handling a request that encounters an error during identity verification', function() {
     var mockhttps = {
       request : function(options, callback) {
         var req = new MockRequest();
@@ -881,7 +597,291 @@ describe('Strategy', function() {
     it('should not yeild info', function() {
       expect(info).to.be.undefined;
     });
-  }); // handling a request with an assertion that fails verification
+  }); // handling a request that encounters an error during identity verification
+  
+  describe('handling a request with an assertion that fails remote verification', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({
+            status: 'failure',
+            reason: 'need assertion and audience' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        transport: mockhttps
+      },
+      function(email, done) {
+        done(null, { email: email });
+      }
+    );
+    
+    
+    var error
+      , user
+      , info;
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .success(function(u, i) {
+          user = u;
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          error = err;
+          done();
+        })
+        .authenticate();
+    });
+
+    it('should error', function() {
+      expect(error).to.be.an.instanceof(Error)
+      expect(error).to.be.an.instanceof(VerificationError)
+      expect(error.message).to.equal('need assertion and audience')
+    });
+
+    it('should not yield user', function() {
+      expect(user).to.be.undefined;
+    });
+    
+    it('should not yeild info', function() {
+      expect(info).to.be.undefined;
+    });
+  }); // handling a request with an assertion that fails remote verification
+  
+  describe('handling a request with an assertion that fails remote verification due to audience mismatch', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({
+            status: 'failure',
+            reason: 'audience mismatch: domain mismatch' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        transport: mockhttps
+      },
+      function(email, done) {
+        done(null, { email: email });
+      }
+    );
+    
+    
+    var error
+      , user
+      , info;
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .success(function(u, i) {
+          user = u;
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          error = err;
+          done();
+        })
+        .authenticate();
+    });
+
+    it('should error', function() {
+      expect(error).to.be.an.instanceof(Error)
+      expect(error).to.be.an.instanceof(VerificationError)
+      expect(error.message).to.equal('audience mismatch: domain mismatch')
+    });
+
+    it('should not yield user', function() {
+      expect(user).to.be.undefined;
+    });
+    
+    it('should not yeild info', function() {
+      expect(info).to.be.undefined;
+    });
+  }); // handling a request with an assertion that fails verification due to audience mismatch
+  
+  describe('handling a request with an assertion that fails remote verification due to expired assertion', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', JSON.stringify({ status: 'failure', reason: 'assertion has expired' })
+          );
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        transport: mockhttps
+      },
+      function(email, done) {
+        done(null, { email: email });
+      }
+    );
+    
+    
+    var error
+      , user
+      , info;
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .success(function(u, i) {
+          user = u;
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          error = err;
+          done();
+        })
+        .authenticate();
+    });
+
+    it('should error', function() {
+      expect(error).to.be.an.instanceof(Error)
+      expect(error).to.be.an.instanceof(VerificationError)
+      expect(error.message).to.equal('assertion has expired')
+    });
+
+    it('should not yield user', function() {
+      expect(user).to.be.undefined;
+    });
+    
+    it('should not yeild info', function() {
+      expect(info).to.be.undefined;
+    });
+  }); // handling a request with an assertion that fails verification due to expired assertion
+  
+  describe('encountering an unexpected response from remote verification', function() {
+    var mockhttps = {
+      request : function(options, callback) {
+        var req = new MockRequest();
+        var res = new MockResponse();
+        
+        req.on('end', function(data, encoding) {
+          if (options.method !== 'POST') { return res.emit('error', new Error('incorrect options.method argument')); }
+          if (options.headers['Content-Type'] !== 'application/x-www-form-urlencoded') { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (options.headers['Content-Length'] !== 70) { return res.emit('error', new Error('incorrect options.headers argument')); }
+          if (data !== 'assertion=secret-assertion-data&audience=https%3A%2F%2Fwww.example.com') { return res.emit('error', new Error('incorrect data argument')); }
+          
+          res.emit('data', '<html>\
+<head><title>411 Length Required</title></head> \
+<body bgcolor="white"> \
+<center><h1>411 Length Required</h1></center> \
+<hr><center>nginx/0.7.65</center> \
+</body> \
+</html>');
+          res.emit('end');
+        })
+        
+        callback(res);
+        return req;
+      }
+    }
+    
+    var strategy = new PersonaStrategy({
+        audience: 'https://www.example.com',
+        transport: mockhttps
+      },
+      function(email, done) {
+        done(null, { email: email });
+      }
+    );
+    
+    
+    var error
+      , user
+      , info;
+    
+    before(function(done) {
+      chai.passport.use(strategy)
+        .success(function(u, i) {
+          user = u;
+          info = i;
+          done();
+        })
+        .req(function(req) {
+          req.body = {};
+          req.body['assertion'] = 'secret-assertion-data';
+        })
+        .error(function(err) {
+          error = err;
+          done();
+        })
+        .authenticate();
+    });
+
+    it('should error', function() {
+      expect(error).to.be.an.instanceof(Error)
+      expect(error.message).to.equal('Failed to parse verification response')
+    });
+
+    it('should not yield user', function() {
+      expect(user).to.be.undefined;
+    });
+    
+    it('should not yeild info', function() {
+      expect(info).to.be.undefined;
+    });
+  }); // encountering an unexpected response from remote verification
   
   describe('handling a request without body', function() {
     var mockhttps = {
