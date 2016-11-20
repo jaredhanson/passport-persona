@@ -856,6 +856,7 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  // OK
   'strategy handling a request without a body': {
     topic: function() {
       var strategy = new PersonaStrategy({
