@@ -40,6 +40,25 @@ describe('Strategy', function() {
     });
   });
   
+  describe('constructed without a verify callback', function() {
+    it('should throw', function() {
+      expect(function() {
+        var strategy = new PersonaStrategy({
+          audience: 'https://www.example.com'
+        });
+      }).to.throw(TypeError, 'PersonaStrategy requires a verify callback');
+    });
+  }); // without a verify callback
+  
+  describe('constructed without an audience option', function() {
+    it('should throw', function() {
+      expect(function() {
+        var strategy = new PersonaStrategy({
+        }, function() {});
+      }).to.throw(TypeError, 'PersonaStrategy requires an audience option');
+    });
+  }); // without a verify callback
+  
   describe('handling a request with an assertion that is verified by email', function() {
     var mockhttps = {
       request : function(options, callback) {

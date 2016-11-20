@@ -932,6 +932,7 @@ vows.describe('PersonaStrategy').addBatch({
     },
   },
   
+  // OK
   'strategy constructed without a validate callback': {
     'should throw an error': function (strategy) {
       assert.throws(function() {
