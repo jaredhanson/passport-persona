@@ -1,4 +1,10 @@
-# Passport-Persona
+# passport-persona
+
+[![Build](https://img.shields.io/travis/jaredhanson/passport-persona.svg)](https://travis-ci.org/jaredhanson/passport-persona)
+[![Coverage](https://img.shields.io/coveralls/jaredhanson/passport-persona.svg)](https://coveralls.io/r/jaredhanson/passport-persona)
+[![Quality](https://img.shields.io/codeclimate/github/jaredhanson/passport-persona.svg?label=quality)](https://codeclimate.com/github/jaredhanson/passport-persona)
+[![Dependencies](https://img.shields.io/david/jaredhanson/passport-persona.svg)](https://david-dm.org/jaredhanson/passport-persona)
+
 
 [Passport](https://github.com/jaredhanson/passport) strategy for authenticating
 with [Mozilla Persona](https://login.persona.org/).
