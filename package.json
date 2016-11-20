@@ -1,6 +1,6 @@
 {
   "name": "passport-persona",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "Mozilla Persona authentication strategy for Passport.",
   "keywords": [
     "passport",
@@ -16,9 +16,15 @@
     "email": "jaredhanson@gmail.com",
     "url": "http://www.jaredhanson.net/"
   },
-  "contributors": [ 
-    { "name": "Jared Hanson", "email": "jaredhanson@gmail.com" },
-    { "name": "Leo McArdle", "email": "leomcardle@gmail.com" }
+  "contributors": [
+    {
+      "name": "Jared Hanson",
+      "email": "jaredhanson@gmail.com"
+    },
+    {
+      "name": "Leo McArdle",
+      "email": "leomcardle@gmail.com"
+    }
   ],
   "repository": {
     "type": "git",
