@@ -2,7 +2,6 @@ var PersonaStrategy = require('../lib/strategy');
 var events = require('events');
 var util = require('util');
 var chai = require('chai');
-var BadRequestError = require('../lib/errors/badrequesterror');
 var VerificationError = require('../lib/errors/verificationerror');
 
 
