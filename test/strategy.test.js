@@ -731,7 +731,7 @@ describe('Strategy', function() {
     });
   }); // encountering an error during application-layer identity verification
   
-  describe('handling a request with an assertion that fails remote verification', function() {
+  describe('encountering an error from remote verification', function() {
     var mockhttps = {
       request : function(options, callback) {
         var req = new MockRequest();
@@ -801,7 +801,7 @@ describe('Strategy', function() {
     it('should not yeild info', function() {
       expect(info).to.be.undefined;
     });
-  }); // handling a request with an assertion that fails remote verification
+  }); // encountering an error from remote verification
   
   describe('encountering a error while requesting remote verification', function() {
     var mockhttps = {
