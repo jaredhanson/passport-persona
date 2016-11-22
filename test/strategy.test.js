@@ -21,6 +21,7 @@ MockRequest.prototype.end = function(data, encoding) {
 
 function MockResponse() {
   events.EventEmitter.call(this);
+  this.statusCode = 200;
 };
 
 util.inherits(MockResponse, events.EventEmitter);
@@ -403,7 +404,7 @@ describe('Strategy', function() {
     });
   }); // handling a request with an assertion that is verified by email, in passReqToCallbackMode
   
-  describe('handling a request that fails identity verification', function() {
+  describe('failing authentication from application-layer identity verification', function() {
     var mockhttps = {
       request : function(options, callback) {
         var req = new MockRequest();
@@ -462,9 +463,9 @@ describe('Strategy', function() {
     it('should not yield info', function() {
       expect(info).to.be.undefined;
     });
-  }); // handling a request that fails identity verification
+  }); // failing authentication from application-layer identity verification
   
-  describe('handling a request that fails identity verification and yeilds info', function() {
+  describe('failing authentication and yeilding info from application-layer identity verification', function() {
     var mockhttps = {
       request : function(options, callback) {
         var req = new MockRequest();
@@ -524,9 +525,9 @@ describe('Strategy', function() {
       expect(info).to.be.an.object;
       expect(info.message).to.equal('Invite required');
     });
-  }); // handling a request that fails identity verification and yeilds info
+  }); // failing authentication and yeilding info from application-layer identity verification
   
-  describe('handling a request that encounters an error during identity verification', function() {
+  describe('encountering an error during application-layer identity verification', function() {
     var mockhttps = {
       request : function(options, callback) {
         var req = new MockRequest();
@@ -597,7 +598,7 @@ describe('Strategy', function() {
     it('should not yeild info', function() {
       expect(info).to.be.undefined;
     });
-  }); // handling a request that encounters an error during identity verification
+  }); // encountering an error during application-layer identity verification
   
   describe('handling a request with an assertion that fails remote verification', function() {
     var mockhttps = {
